@@ -7,6 +7,7 @@
  */
 
 import { buildCosenseUrl, isValidProjectName } from "../lib/cosense";
+import { t } from "../lib/i18n";
 import { getProjectName, getSettings } from "../lib/storage";
 
 /** コンテキストメニューのID */
@@ -49,7 +50,7 @@ function setupContextMenu(): void {
   browser.contextMenus.removeAll(() => {
     browser.contextMenus.create({
       id: CONTEXT_MENU_ID,
-      title: "Cosenseに保存",
+      title: t("contextMenuSave"),
       contexts: ["page"],
     });
   });

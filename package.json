@@ -1,6 +1,6 @@
 {
   "name": "cosense-link-clipper",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "現在のWebページをCosense（Scrapbox）にクリップするブラウザ拡張機能",
   "private": true,
   "scripts": {

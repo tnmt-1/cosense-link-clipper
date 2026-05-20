@@ -10,13 +10,15 @@ export default defineConfig({
   modules: ["@wxt-dev/module-react"],
 
   manifest: {
-    name: "Cosense Link Clipper",
-    description: "現在のWebページをCosense（Scrapbox）にクリップします",
-    version: "1.0.0",
+    name: "__MSG_extensionName__",
+    description: "__MSG_extensionDescription__",
+    default_locale: "en",
+    version: "0.0.1",
     permissions: ["activeTab", "storage", "tabs", "contextMenus"],
   },
 
   vite: () => ({
+    base: "./",
     // Tailwind CSS v4のViteプラグインを追加
     plugins: [tailwindcss()],
   }),

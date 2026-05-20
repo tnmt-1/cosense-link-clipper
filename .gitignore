@@ -1,0 +1,24 @@
+# 依存関係
+node_modules/
+
+# ビルド出力
+.output/
+.wxt/
+
+# 環境設定
+.env
+.env.local
+.env.*.local
+
+# エディタ設定
+.DS_Store
+.idea/
+*.swp
+*.swo
+
+# ログ
+*.log
+npm-debug.log*
+
+# TypeScriptビルドキャッシュ
+*.tsbuildinfo

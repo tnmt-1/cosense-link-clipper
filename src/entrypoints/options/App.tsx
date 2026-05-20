@@ -8,7 +8,11 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { isValidProjectName } from "../../lib/cosense";
-import { getProjectName, saveProjectName } from "../../lib/storage";
+import {
+  getSettings,
+  saveOpenPageOnSave,
+  saveProjectName,
+} from "../../lib/storage";
 
 /** 保存操作の状態を表す型 */
 type SaveStatus = "idle" | "saving" | "saved" | "error";
@@ -23,6 +27,7 @@ type SaveStatus = "idle" | "saving" | "saved" | "error";
 export default function App() {
   /** プロジェクト名の入力値 */
   const [projectName, setProjectName] = useState<string>("");
+  const [openPageOnSave, setOpenPageOnSave] = useState<boolean>(true);
   /** 保存操作の状態 */
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
   /** 読み込み中フラグ */
@@ -35,8 +40,9 @@ export default function App() {
    */
   useEffect(() => {
     const loadSettings = async () => {
-      const saved = await getProjectName();
-      setProjectName(saved);
+      const settings = await getSettings();
+      setProjectName(settings.projectName);
+      setOpenPageOnSave(settings.openPageOnSave);
       setIsLoading(false);
     };
     loadSettings();
@@ -56,6 +62,7 @@ export default function App() {
     setSaveStatus("saving");
     try {
       await saveProjectName(projectName);
+      await saveOpenPageOnSave(openPageOnSave);
       setSaveStatus("saved");
       // 3秒後にidle状態に戻す
       setTimeout(() => setSaveStatus("idle"), 3000);
@@ -63,7 +70,7 @@ export default function App() {
       setSaveStatus("error");
       setTimeout(() => setSaveStatus("idle"), 3000);
     }
-  }, [projectName]);
+  }, [projectName, openPageOnSave]);
 
   /**
    * Enterキーでフォームを送信する
@@ -149,6 +156,22 @@ export default function App() {
             >
               {saveStatus === "saving" ? "保存中..." : "保存"}
             </button>
+
+            <div className="mt-4">
+              <h3 className="text-sm font-medium text-gray-700 mb-2">保存時の動作</h3>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={openPageOnSave}
+                  onChange={(e) => setOpenPageOnSave(e.target.checked)}
+                  className="w-4 h-4 text-emerald-600 rounded border-gray-300 focus:ring-emerald-500"
+                />
+                <span className="text-sm text-gray-700">保存後にCosenseのページを開く</span>
+              </label>
+              <p className="mt-1 text-xs text-gray-500 ml-7">
+                オフにするとバックグラウンドで保存され、現在のページから移動しません
+              </p>
+            </div>
 
             {/* 保存成功メッセージ */}
             {saveStatus === "saved" && (

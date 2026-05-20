@@ -7,7 +7,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { buildCosenseUrl, isValidProjectName } from "../../lib/cosense";
-import { getProjectName } from "../../lib/storage";
+import { getSettings } from "../../lib/storage";
 
 /** ポップアップの状態を表す型 */
 type ClipStatus = "idle" | "clipped" | "error";
@@ -47,6 +47,7 @@ export default function App() {
   const [pageUrl, setPageUrl] = useState<string>("");
   /** Cosenseプロジェクト名 */
   const [projectName, setProjectName] = useState<string>("");
+  const [openPageOnSave, setOpenPageOnSave] = useState<boolean>(true);
   /** クリップ操作の状態 */
   const [status, setStatus] = useState<ClipStatus>("idle");
   /** エラーメッセージ */
@@ -62,9 +63,9 @@ export default function App() {
   useEffect(() => {
     const initialize = async () => {
       setIsLoading(true);
-      const [tab, project] = await Promise.all([
+      const [tab, settings] = await Promise.all([
         getCurrentTab(),
-        getProjectName(),
+        getSettings(),
       ]);
 
       if (tab) {
@@ -75,7 +76,8 @@ export default function App() {
         setStatus("error");
       }
 
-      setProjectName(project);
+      setProjectName(settings.projectName);
+      setOpenPageOnSave(settings.openPageOnSave);
       setIsLoading(false);
     };
 
@@ -114,14 +116,14 @@ export default function App() {
     }
 
     const cosenseUrl = buildCosenseUrl(projectName, pageTitle, pageUrl);
-    await browser.tabs.create({ url: cosenseUrl });
+    await browser.tabs.create({ url: cosenseUrl, active: openPageOnSave });
     setStatus("clipped");
 
     // 少し待ってからポップアップを閉じる
     setTimeout(() => {
       window.close();
     }, 800);
-  }, [projectName, pageTitle, pageUrl]);
+  }, [openPageOnSave, pageTitle, pageUrl, projectName]);
 
   if (isLoading) {
     return (

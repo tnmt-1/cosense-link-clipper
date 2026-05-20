@@ -13,7 +13,7 @@ export default defineConfig({
     name: "Cosense Link Clipper",
     description: "現在のWebページをCosense（Scrapbox）にクリップします",
     version: "1.0.0",
-    permissions: ["activeTab", "storage", "tabs"],
+    permissions: ["activeTab", "storage", "tabs", "contextMenus"],
   },
 
   vite: () => ({

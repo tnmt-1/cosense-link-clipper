@@ -13,7 +13,7 @@ export default defineConfig({
     name: "__MSG_extensionName__",
     description: "__MSG_extensionDescription__",
     default_locale: "en",
-    version: "0.0.1",
+    version: "0.0.2",
     permissions: ["storage", "tabs", "contextMenus"],
     // Firefox はgecko IDが必須
     ...(browser === "firefox" && {

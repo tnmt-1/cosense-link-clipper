@@ -28,3 +28,6 @@ npm-debug.log*
 
 # Serena metadata
 .serena/
+
+# superpowers
+docs/superpowers/

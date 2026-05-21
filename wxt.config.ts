@@ -9,13 +9,22 @@ export default defineConfig({
   // Reactモジュールを使用してJSX変換を自動設定
   modules: ["@wxt-dev/module-react"],
 
-  manifest: {
+  manifest: ({ browser }) => ({
     name: "__MSG_extensionName__",
     description: "__MSG_extensionDescription__",
     default_locale: "en",
     version: "0.0.1",
     permissions: ["activeTab", "storage", "tabs", "contextMenus"],
-  },
+    // Firefox はgecko IDが必須
+    ...(browser === "firefox" && {
+      browser_specific_settings: {
+        gecko: {
+          id: "cosense-link-clipper@tnmt",
+          strict_min_version: "91.0",
+        },
+      },
+    }),
+  }),
 
   vite: () => ({
     base: "./",

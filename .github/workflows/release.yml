@@ -25,19 +25,21 @@ jobs:
       - name: Build Chrome ZIP
         run: npm run zip
 
-      - name: Build Firefox ZIP
-        run: npm run zip:firefox
+      - name: Build Firefox
+        run: npm run build:firefox
 
-      - name: Rename Firefox ZIP to XPI
+      - name: Sign Firefox extension (unlisted)
         run: |
-          for f in .output/*-firefox.zip; do
-            mv "$f" "${f%-firefox.zip}-firefox.xpi"
-          done
+          npx web-ext sign \
+            --source-dir=.output/firefox-mv2 \
+            --api-key=${{ secrets.MOZILLA_API_KEY }} \
+            --api-secret=${{ secrets.MOZILLA_API_SECRET }} \
+            --channel=unlisted
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             .output/*-chrome.zip
-            .output/*-firefox.xpi
+            web-ext-artifacts/*.xpi
           generate_release_notes: true

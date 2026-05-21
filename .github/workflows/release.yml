@@ -25,6 +25,20 @@ jobs:
       - name: Build Chrome ZIP
         run: npm run zip
 
+      - name: Ensure single Chrome ZIP exists
+        id: chrome_zip
+        run: |
+          CHROME_ZIP_PATH=$(python - <<'PY'
+          from pathlib import Path
+
+          matches = sorted(Path('.output').glob('*-chrome.zip'))
+          if len(matches) != 1:
+              raise SystemExit(f'Expected exactly one Chrome ZIP, found {len(matches)}: {[p.as_posix() for p in matches]}')
+          print(matches[0].as_posix())
+          PY
+          )
+          echo "path=$CHROME_ZIP_PATH" >> "$GITHUB_OUTPUT"
+
       - name: Build Firefox
         run: npm run build:firefox
 
@@ -40,6 +54,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            .output/*-chrome.zip
+            ${{ steps.chrome_zip.outputs.path }}
             web-ext-artifacts/*.xpi
           generate_release_notes: true

@@ -14,7 +14,7 @@ export default defineConfig({
     description: "__MSG_extensionDescription__",
     default_locale: "en",
     version: "0.0.1",
-    permissions: ["activeTab", "storage", "tabs", "contextMenus"],
+    permissions: ["storage", "tabs", "contextMenus"],
     // Firefox はgecko IDが必須
     ...(browser === "firefox" && {
       browser_specific_settings: {

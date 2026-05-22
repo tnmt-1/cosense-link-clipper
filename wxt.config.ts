@@ -1,5 +1,6 @@
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "wxt";
+import pkg from "./package.json";
 
 // WXTの設定ファイル
 // Chrome/Firefoxの両ブラウザに対応したManifest V3の設定を行う
@@ -13,7 +14,7 @@ export default defineConfig({
     name: "__MSG_extensionName__",
     description: "__MSG_extensionDescription__",
     default_locale: "en",
-    version: "0.0.2",
+    version: pkg.version,
     permissions: ["storage", "tabs", "contextMenus"],
     // Firefox はgecko IDが必須
     ...(browser === "firefox" && {

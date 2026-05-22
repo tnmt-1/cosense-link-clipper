@@ -1,4 +1,11 @@
 {
+  "categories": {
+    "firefox": ["bookmarks"]
+  },
+  "summary": {
+    "en-US": "Clip the current web page to Cosense (Scrapbox)",
+    "ja": "現在のWebページをCosense（Scrapbox）にクリップします"
+  },
   "version": {
     "license": "MIT"
   }

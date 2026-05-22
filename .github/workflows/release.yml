@@ -28,7 +28,7 @@ jobs:
       - name: Ensure single Chrome ZIP exists
         id: chrome_zip
         run: |
-          CHROME_ZIP_PATH=$(python - <<'PY'
+          CHROME_ZIP_PATH=$(python3 - <<'PY'
           from pathlib import Path
 
           matches = sorted(Path('.output').glob('*-chrome.zip'))
@@ -39,21 +39,40 @@ jobs:
           )
           echo "path=$CHROME_ZIP_PATH" >> "$GITHUB_OUTPUT"
 
-      - name: Build Firefox
-        run: npm run build:firefox
+      - name: Build Firefox ZIP
+        run: npm run zip:firefox
 
-      - name: Sign Firefox extension (unlisted)
+      - name: Prepare Firefox XPI artifact
+        id: firefox_xpi
+        run: |
+          FIREFOX_XPI_PATH=$(python3 - <<'PY'
+          from pathlib import Path
+          import shutil
+
+          matches = sorted(Path('.output').glob('*-firefox.zip'))
+          if len(matches) != 1:
+              raise SystemExit(f'Expected exactly one Firefox ZIP, found {len(matches)}: {[p.as_posix() for p in matches]}')
+          src = matches[0]
+          dst = src.with_suffix('.xpi')
+          shutil.copy(src, dst)
+          print(dst.as_posix())
+          PY
+          )
+          echo "path=$FIREFOX_XPI_PATH" >> "$GITHUB_OUTPUT"
+
+      - name: Submit Firefox extension to AMO (listed)
         run: |
           npx web-ext sign \
             --source-dir=.output/firefox-mv2 \
             --api-key=${{ secrets.MOZILLA_API_KEY }} \
             --api-secret=${{ secrets.MOZILLA_API_SECRET }} \
-            --channel=unlisted
+            --channel=listed \
+            --approval-timeout=0
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             ${{ steps.chrome_zip.outputs.path }}
-            web-ext-artifacts/*.xpi
+            ${{ steps.firefox_xpi.outputs.path }}
           generate_release_notes: true

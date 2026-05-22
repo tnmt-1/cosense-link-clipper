@@ -80,6 +80,13 @@ Cosense Link Clipper がエンドユーザー向けに提供する機能と、�
 ### GitHub Actions による自動リリース（`v*` タグ push 時）
 
 - Chrome 向け ZIP ビルド（`wxt zip`）
-- Firefox 向けビルド + Mozilla AMO への署名（`web-ext sign`、unlisted チャンネル）
-- GitHub Releases に Chrome ZIP と Firefox XPI を添付
-- Chrome Web Store・Firefox Add-ons への公開は手動で行う
+- Firefox 向け ZIP ビルド（`wxt zip:firefox`）→ XPI にリネームして GitHub Releases に添付
+- Mozilla AMO へ自動提出（`web-ext sign --channel=listed`）。レビュー通過後に Firefox Add-ons で公開される
+- GitHub Releases に Chrome ZIP（`*-chrome.zip`）と Firefox XPI（`*-firefox.xpi`）を添付
+
+### 配布チャンネルごとの公開フロー
+
+| ブラウザ | 配布先 | 公開フロー |
+|---|---|---|
+| Chrome | Chrome Web Store | GitHub Releases の ZIP を手動提出 |
+| Firefox | Firefox Add-ons（AMO） | `v*` タグ push で AMO に自動提出・レビュー後公開 |
